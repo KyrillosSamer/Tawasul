@@ -8,32 +8,35 @@ import Post from '@/app/_components/Post/Post';
 import Loading from '@/app/Loading';
 import Container from '@mui/material/Container';
 
-export default function PostPage({ params }: { params: { id: string } }) {
+interface PostPageProps {
+  params: { id: string };
+}
+
+export default function PostPage({ params }: PostPageProps) {
   const dispatch = useDispatch<dispatchType>();
   const { singlePost, isLoading } = useSelector((state: stateType) => state.post);
 
   useEffect(() => {
-    if (params.id) {
+    if (params?.id) {
       dispatch(getSinglePost(params.id));
     }
-  }, [params.id, dispatch]);
+  }, [params?.id, dispatch]);
 
-  // is loading
   if (isLoading) {
     return <Loading />;
   }
 
-  // no data
   if (!singlePost) {
-    return <p style={{ textAlign: 'center', padding: '2rem' }}>Post not found</p>;
+    return (
+      <p style={{ textAlign: 'center', padding: '2rem' }}>
+        Post not found
+      </p>
+    );
   }
 
-  // Data is ready
   return (
-    <>
-      <Container maxWidth="lg">
-        <Post postdata={singlePost} allComments={true} />
-      </Container>
-    </>
+    <Container maxWidth="lg">
+      <Post postdata={singlePost} allComments />
+    </Container>
   );
 }

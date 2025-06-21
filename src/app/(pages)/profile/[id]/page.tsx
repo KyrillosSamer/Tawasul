@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
   Container,
@@ -12,18 +13,28 @@ import {
 } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import { useSelector } from 'react-redux';
-import { stateType } from '@/lib/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllPost } from '@/lib/postSlice';
+import { stateType, dispatchType } from '@/lib/store';
 import Post from '@/app/_components/Post/Post';
 
 export default function ProfilePage() {
   const searchParams = useSearchParams();
+  const dispatch = useDispatch<dispatchType>();
 
   const name = searchParams.get('name') || 'No Name';
   const photo = searchParams.get('photo') || '/default.png';
   const userId = searchParams.get('id') || '';
 
   const allPosts = useSelector((state: stateType) => state.post.AllPost) || [];
+
+  // get posts
+  useEffect(() => {
+    if (allPosts.length === 0) {
+      dispatch(getAllPost());
+    }
+  }, [dispatch, allPosts]);
+
   const userPosts = Array.isArray(allPosts)
     ? allPosts.filter((post) => post?.user?._id === userId)
     : [];
@@ -48,13 +59,13 @@ export default function ProfilePage() {
 
         {/* Buttons */}
         <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2 }}>
-       <Button
+          <Button
             variant="contained"
             startIcon={<FavoriteIcon />}
             sx={{ backgroundColor: '#f00155', '&:hover': { backgroundColor: '#c90045' } }}
           >
             Follow
-        </Button>
+          </Button>
 
           <Button variant="outlined" color="secondary" startIcon={<ChatBubbleOutlineIcon />}>
             Message

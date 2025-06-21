@@ -42,7 +42,7 @@ export default function Register() {
           dateOfBirth: '',
         });
       })
-      .catch((err: any) => {
+      .catch((err: string) => {
         toast.error(err);
       });
   };
