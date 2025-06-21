@@ -2,15 +2,17 @@
   "name": "lastapp",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://kyrillossamer.github.io/Tawasul",
+"homepage": "https://kyrillossamer.github.io/Tawasul",
 "scripts": {
   "dev": "next dev",
-  "build": "next build && next export",
+  "build": "next build",
   "start": "next start",
   "lint": "next lint",
   "predeploy": "npm run build",
-  "deploy": "gh-pages -d out"
-},
+  "deploy": "gh-pages -d out" 
+}
+
+,
   "dependencies": {
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",

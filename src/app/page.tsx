@@ -15,16 +15,14 @@ export default function Home() {
   const { AllPost, isLoading } = useSelector((state: stateType) => state.post);
   const dispatch = useDispatch<dispatchType>();
 
-  // 👇 نضيف ستايت محلي لانتظار التهيئة الأولى
   const [initialLoad, setInitialLoad] = useState(true);
 
   useEffect(() => {
     dispatch(getAllPost()).then(() => {
-      setInitialLoad(false); // 🟢 بعد ما تخلص اللودينج أول مرة
+      setInitialLoad(false); 
     });
   }, [dispatch]);
 
-  // ❌ إياك تعرض أي شيء قبل انتهاء اللودينج الأول
   if (initialLoad || isLoading) {
     return <Loading />;
   }
