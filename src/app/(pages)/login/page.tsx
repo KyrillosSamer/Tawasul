@@ -1,7 +1,7 @@
 'use client';
-import React from 'react'
-import { Paper, TextField, Container, Typography, Button } from '@mui/material'
-import { useFormik } from 'formik'
+import React, { useEffect } from 'react';
+import { Paper, TextField, Container, Typography, Button } from '@mui/material';
+import { useFormik } from 'formik';
 import { handleLogin } from '@/lib/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { dispatchType, stateType } from '@/lib/store';
@@ -9,9 +9,14 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
 export default function Login() {
-let router = useRouter()
+  const router = useRouter();
   const dispatch = useDispatch<dispatchType>();
-  const { token, isLoading } = useSelector((state: stateType) => state.auth);
+  const { isLoading } = useSelector((state: stateType) => state.auth);
+
+  // 🔻 إزالة فلاج الـ loading في Navbar عند الوصول للصفحة
+  useEffect(() => {
+    sessionStorage.removeItem('loading-login');
+  }, []);
 
   const loginFormik = useFormik({
     initialValues: {
@@ -23,9 +28,7 @@ let router = useRouter()
 
       if (handleLogin.fulfilled.match(resultAction)) {
         toast.success("Welcome back!");
-        //  redirect  
-        router.push("/")
-
+        router.push("/");
       } else if (handleLogin.rejected.match(resultAction)) {
         toast.error("Incorrect Email or Password");
       }

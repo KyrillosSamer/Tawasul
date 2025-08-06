@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Paper, TextField, Container, Typography, Button,
   RadioGroup, FormControlLabel, Radio, FormLabel, FormControl
@@ -17,17 +17,52 @@ export default function Register() {
     password: '',
     rePassword: '',
     gender: 'male',
-    dateOfBirth: '', 
+    dateOfBirth: '',
+  });
+
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+    rePassword: '',
   });
 
   const { isLoading, error } = useSelector((state: any) => state.auth);
 
+  // 🔻 حذف فلاج الـ loading من sessionStorage
+  useEffect(() => {
+    sessionStorage.removeItem('loading-register');
+  }, []);
+
+  const validate = () => {
+    const newErrors: any = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+    if (!emailRegex.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email.';
+    }
+
+    if (!passwordRegex.test(formData.password)) {
+      newErrors.password = 'Password must be at least 8 characters with uppercase, lowercase, and a number.';
+    }
+
+    if (formData.password !== formData.rePassword) {
+      newErrors.rePassword = 'Passwords do not match.';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: '' });
   };
 
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validate()) return;
 
     dispatch(handleRegister(formData) as any)
       .unwrap()
@@ -41,6 +76,7 @@ export default function Register() {
           gender: 'male',
           dateOfBirth: '',
         });
+        setErrors({});
       })
       .catch((err: string) => {
         toast.error(err);
@@ -67,6 +103,8 @@ export default function Register() {
             value={formData.email}
             onChange={handleChange}
             type="email" variant="standard" sx={{ mb: 2 }}
+            error={Boolean(errors.email)}
+            helperText={errors.email || 'Enter a valid email like example@mail.com'}
           />
 
           <TextField
@@ -74,6 +112,8 @@ export default function Register() {
             value={formData.password}
             onChange={handleChange}
             type="password" variant="standard" sx={{ mb: 2 }}
+            error={Boolean(errors.password)}
+            helperText={errors.password || 'At least 8 chars with uppercase, lowercase, and number'}
           />
 
           <TextField
@@ -81,6 +121,8 @@ export default function Register() {
             value={formData.rePassword}
             onChange={handleChange}
             type="password" variant="standard" sx={{ mb: 2 }}
+            error={Boolean(errors.rePassword)}
+            helperText={errors.rePassword || 'Must match the password'}
           />
 
           <TextField

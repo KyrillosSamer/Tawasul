@@ -2,17 +2,15 @@
   "name": "lastapp",
   "version": "0.1.0",
   "private": true,
-"homepage": "https://kyrillossamer.github.io/Tawasul",
-"scripts": {
-  "dev": "next dev",
-  "build": "next build",
-  "start": "next start",
-  "lint": "next lint",
-  "predeploy": "npm run build",
-  "deploy": "gh-pages -d out" 
-}
-
-,
+  "homepage": "https://kyrillossamer.github.io/Tawasul",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d out"
+  },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
@@ -27,7 +25,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
-    "react-redux": "^9.2.0"
+    "react-redux": "^9.2.0",
+    "react-toastify": "^11.0.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -46,6 +46,13 @@ export default function CreatePost({ onPostCreated }: { onPostCreated: () => voi
   }
 
   function createPost() {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      toast.error('You must be logged in to create a post');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('body', postBody);
     if (postImg) {
@@ -55,7 +62,7 @@ export default function CreatePost({ onPostCreated }: { onPostCreated: () => voi
     axios
       .post('https://linked-posts.routemisr.com/posts', formData, {
         headers: {
-          token: localStorage.getItem('token') || '',
+          token,
         },
       })
       .then((res) => {
