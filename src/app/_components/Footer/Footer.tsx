@@ -12,6 +12,7 @@ export default function Footer() {
         color: 'white',
         py: 3,
         mt: 5,
+        
       }}
     >
       <Container maxWidth="lg" sx={{ textAlign: 'center' }}>

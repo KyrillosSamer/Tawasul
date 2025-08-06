@@ -26,17 +26,33 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>Tawasul</title> 
+        <title>Tawasul</title>
         <link rel="icon" href="/favicon.ico" />
         <meta name="description" content="A modern social media platform." />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={{
+          margin: 0,
+          padding: 0,
+          backgroundColor: 'white', 
+        }}
+      >
         <AppRouterCacheProvider>
           <Provider store={store}>
-            <Navbar />
-            {children}
-            <Toaster />
-            <Footer />
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: '98vh',
+                backgroundColor: 'white', 
+              }}
+            >
+              <Navbar />
+              <main style={{ flex: 1 }}>{children}</main>
+              <Toaster />
+              <Footer />
+            </div>
           </Provider>
         </AppRouterCacheProvider>
       </body>
