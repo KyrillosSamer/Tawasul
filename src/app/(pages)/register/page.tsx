@@ -1,10 +1,13 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Paper, TextField, Container, Typography, Button,
-  RadioGroup, FormControlLabel, Radio, FormLabel, FormControl
+  RadioGroup, FormControlLabel, Radio, FormLabel, FormControl,
+  InputAdornment,
+  IconButton
 } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleRegister } from '@/lib/authSlice';
 import toast from 'react-hot-toast';
@@ -20,49 +23,26 @@ export default function Register() {
     dateOfBirth: '',
   });
 
-  const [errors, setErrors] = useState({
-    email: '',
-    password: '',
-    rePassword: '',
-  });
-
   const { isLoading, error } = useSelector((state: any) => state.auth);
 
-  // 🔻 حذف فلاج الـ loading من sessionStorage
-  useEffect(() => {
-    sessionStorage.removeItem('loading-register');
-  }, []);
-
-  const validate = () => {
-    const newErrors: any = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-
-    if (!emailRegex.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email.';
-    }
-
-    if (!passwordRegex.test(formData.password)) {
-      newErrors.password = 'Password must be at least 8 characters with uppercase, lowercase, and a number.';
-    }
-
-    if (formData.password !== formData.rePassword) {
-      newErrors.rePassword = 'Passwords do not match.';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  // حالة إظهار/إخفاء الباسورد
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRePassword, setShowRePassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: '' });
+  };
+
+  const toggleShowPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  const toggleShowRePassword = () => {
+    setShowRePassword((prev) => !prev);
   };
 
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!validate()) return;
 
     dispatch(handleRegister(formData) as any)
       .unwrap()
@@ -76,7 +56,6 @@ export default function Register() {
           gender: 'male',
           dateOfBirth: '',
         });
-        setErrors({});
       })
       .catch((err: string) => {
         toast.error(err);
@@ -92,41 +71,78 @@ export default function Register() {
 
         <form onSubmit={submitHandler}>
           <TextField
-            fullWidth label="Name" name="name"
+            fullWidth
+            label="Name"
+            name="name"
             value={formData.name}
             onChange={handleChange}
-            variant="standard" sx={{ mb: 2 }}
+            variant="standard"
+            sx={{ mb: 2 }}
           />
 
           <TextField
-            fullWidth label="Email" name="email"
+            fullWidth
+            label="Email"
+            name="email"
             value={formData.email}
             onChange={handleChange}
-            type="email" variant="standard" sx={{ mb: 2 }}
-            error={Boolean(errors.email)}
-            helperText={errors.email || 'Enter a valid email like example@mail.com'}
+            type="email"
+            variant="standard"
+            sx={{ mb: 2 }}
           />
 
           <TextField
-            fullWidth label="Password" name="password"
+            fullWidth
+            label="Password"
+            name="password"
             value={formData.password}
             onChange={handleChange}
-            type="password" variant="standard" sx={{ mb: 2 }}
-            error={Boolean(errors.password)}
-            helperText={errors.password || 'At least 8 chars with uppercase, lowercase, and number'}
+            type={showPassword ? "text" : "password"}
+            variant="standard"
+            sx={{ mb: 2 }}
+            helperText="Password must contain uppercase, lowercase letters, a symbol, and numbers, e.g. Kyrillos@123"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    onClick={toggleShowPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
 
           <TextField
-            fullWidth label="Re-enter Password" name="rePassword"
+            fullWidth
+            label="Re-enter Password"
+            name="rePassword"
             value={formData.rePassword}
             onChange={handleChange}
-            type="password" variant="standard" sx={{ mb: 2 }}
-            error={Boolean(errors.rePassword)}
-            helperText={errors.rePassword || 'Must match the password'}
+            type={showRePassword ? "text" : "password"}
+            variant="standard"
+            sx={{ mb: 2 }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label={showRePassword ? "Hide password" : "Show password"}
+                    onClick={toggleShowRePassword}
+                    edge="end"
+                  >
+                    {showRePassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
 
           <TextField
-            fullWidth label="Date of Birth"
+            fullWidth
+            label="Date of Birth"
             type="date"
             name="dateOfBirth"
             value={formData.dateOfBirth}
@@ -139,7 +155,8 @@ export default function Register() {
           <FormControl component="fieldset" sx={{ mb: 2 }}>
             <FormLabel component="legend">Gender</FormLabel>
             <RadioGroup
-              row name="gender"
+              row
+              name="gender"
               value={formData.gender}
               onChange={handleChange}
             >
